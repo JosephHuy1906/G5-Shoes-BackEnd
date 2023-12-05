@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\CategoryController;
@@ -12,13 +13,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::group([
 
+    'middleware' => 'api',
+    'prefix' => 'auth'
 
-Route::post('/auth/register', [UserController::class, 'createUser']);
-Route::post('/auth/login', [UserController::class, 'loginUser']);
+], function ($router) {
+
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', 'AuthController@logout');
+    Route::get('refresh', 'AuthController@refresh');
+    Route::post('profile', 'AuthController@me');
+});
+
+// Route::post('/auth/register', [UserController::class, 'createUser']);
+// Route::post('/auth/login', [UserController::class, 'loginUser']);
 
 Route::resource('products', ProductController::class);
 Route::resource('categorys', CategoryController::class);
