@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('productID');
             $table->unsignedBigInteger('userID');
-            $table->unsignedBigInteger('notiLevelID');
+            $table->string('content');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->foreign('productID')->references('id')->on('products')
@@ -26,10 +26,7 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('notiLevelID')->references('id')->on('level')
-                ->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            
         });
     }
 
@@ -38,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification');
+        Schema::dropIfExists('notifications');
     }
 };

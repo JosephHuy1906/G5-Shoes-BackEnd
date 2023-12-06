@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill_detail', function (Blueprint $table) {
+        Schema::create('bill_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('billID');
             $table->unsignedBigInteger('productID');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
-            $table->foreign('billID')->references('id')->on('bill')->constrained()
+            $table->foreign('billID')->references('id')->on('bills')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->foreign('productID')->references('id')->on('products')->constrained()
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bill_detail');
+        Schema::dropIfExists('bill_details');
     }
 };

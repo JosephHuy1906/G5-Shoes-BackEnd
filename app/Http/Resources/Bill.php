@@ -12,14 +12,22 @@ class Bill extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'userID' => $this->userID,
+            'user' => [
+                'userID' => $this->userID,
+                'User_name' => $this->user->name,
+                'User_avatar' => $this->user->avatar,
+            ],
             'total' => $this->total,
             'address' => $this->address,
-            'statusID' => $this->statusID,
+            'phone' => $this->phone,
+            'status' => [
+                'statusID' => $this->statusID,
+                'status_name' => $this->status->name,
+            ],
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
         ];

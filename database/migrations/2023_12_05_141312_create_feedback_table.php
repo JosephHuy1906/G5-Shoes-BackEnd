@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('feedback', function (Blueprint $table) {
+        Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('commentID');
             $table->unsignedBigInteger('userID');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('userID')->references('id')->on('users')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('commentID')->references('id')->on('comment')->constrained()
+            $table->foreign('commentID')->references('id')->on('comments')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('feedback');
+        Schema::dropIfExists('feedbacks');
     }
 };
