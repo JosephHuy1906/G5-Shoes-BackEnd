@@ -30,6 +30,13 @@ class UserController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
+            $email = User::find($request->email);
+            if ($email) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email is already exist',
+                ], 401);
+            }
 
             $user = User::create([
                 'name' => $request->name,
@@ -41,7 +48,6 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
