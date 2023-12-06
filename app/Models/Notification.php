@@ -11,11 +11,20 @@ class Notification extends Model
 
     public function user()
     {
-        return $this->belongsTo(Status::class, 'statusID');
+        return $this->belongsTo(User::class, 'userID');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productID');
+    }
+    public function notiLevel()
+    {
+        return $this->belongsTo(NotiLevel::class, 'notiLevel');
     }
     protected $fillable = [
         'productID',
         'userID',
-        'content'
+        'content',
+        'notiLevel'
     ];
 }
