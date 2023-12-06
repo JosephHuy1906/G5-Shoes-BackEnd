@@ -29,6 +29,8 @@ Route::group([
 Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::get('/products/search', [ProductController::class, 'search']);
 
+
+
 Route::resource('products', ProductController::class);
 Route::resource('categorys', CategoryController::class);
 Route::resource('bill', BillController::class);
