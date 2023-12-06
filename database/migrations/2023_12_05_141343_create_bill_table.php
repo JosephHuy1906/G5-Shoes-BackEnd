@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill', function (Blueprint $table) {
+        Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('userID');
             $table->integer('total');
             $table->string('address');
             $table->unsignedBigInteger('statusID');
+            $table->string('phone');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->foreign('userID')->references('id')->on('users')->constrained()
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bill');
+        Schema::dropIfExists('bills');
     }
 };

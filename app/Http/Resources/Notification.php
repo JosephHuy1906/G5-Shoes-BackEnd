@@ -18,7 +18,7 @@ class Notification extends JsonResource
             'id' => $this->id ,
             'productID' => $this->productID,
             'userID' => $this->userID,
-            'notiLevelID' => $this->notiLevelID,
+            'content' => $this->content,
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
         ];

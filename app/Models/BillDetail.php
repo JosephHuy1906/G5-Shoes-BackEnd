@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class BillDetail extends Model
 {
     use HasFactory;
-    protected $fillable = ['billID','productID','size','userID','price','quantity'] ;
+    protected $fillable = ['billID','productID','sizeID','userID','price','quantity'] ;
 }

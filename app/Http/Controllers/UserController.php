@@ -25,15 +25,17 @@ class UserController extends Controller
 
             if ($validateUser->fails()) {
                 return response()->json([
-                    'status' => false,
+                    'status' => 400,
+                    'success' => false,
                     'message' => 'validation error',
                     'errors' => $validateUser->errors()
-                ], 401);
+                ], 400);
             }
             $email = User::find($request->email);
             if ($email) {
                 return response()->json([
-                    'status' => false,
+                    'status' => 401,
+                    'success' => false,
                     'message' => 'Email is already exist',
                 ], 401);
             }
@@ -46,12 +48,14 @@ class UserController extends Controller
             ]);
 
             return response()->json([
-                'status' => true,
+                'status' => 200,
+                'success' => true,
                 'message' => 'User Created Successfully',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => false,
+                'status' => 500,
+                'success' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
@@ -75,15 +79,17 @@ class UserController extends Controller
 
             if ($validateUser->fails()) {
                 return response()->json([
-                    'status' => false,
+                    'status' => 400,
+                    'success' => false,
                     'message' => 'validation error',
                     'errors' => $validateUser->errors()
-                ], 401);
+                ], 400);
             }
 
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
-                    'status' => false,
+                    'status' => 401,
+                    'success' => false,
                     'message' => 'Email & Password does not match with our record.',
                 ], 401);
             }
@@ -91,7 +97,8 @@ class UserController extends Controller
             $user = User::where('email', $request->email)->first();
 
             return response()->json([
-                'status' => true,
+                'status' => 200,
+                'success' => true,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
                 'data' => [
@@ -104,7 +111,8 @@ class UserController extends Controller
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => false,
+                'status' => 500,
+                'success' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
