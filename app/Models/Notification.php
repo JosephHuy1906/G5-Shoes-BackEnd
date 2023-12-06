@@ -13,16 +13,22 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'userID');
     }
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'productID');
-    }
+
     public function notiLevel()
     {
         return $this->belongsTo(NotiLevel::class, 'notiLevel');
     }
+    public function bill()
+    {
+        return $this->belongsTo(Bill::class, 'billID');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productID');
+    }
     protected $fillable = [
         'productID',
+        'billID',
         'userID',
         'content',
         'notiLevel'

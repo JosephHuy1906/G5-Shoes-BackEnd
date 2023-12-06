@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Bill as ResourcesBill;
 use App\Models\Bill;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +25,7 @@ class BillController extends Controller
 
         ], 200);
     }
-
+    
     public function store(Request $request)
     {
         $input = $request->all();
@@ -52,6 +53,12 @@ class BillController extends Controller
             ], 400);
         }
         $bill = Bill::create([...$input, 'statusID' => 1]);
+        Notification::create([
+            'bill' => $bill->id,
+            'userID' => $request->userID,
+            'content' => "Đơn hàng của bạn " . $bill->status->name,
+            'notiLevel' => 1
+        ]);
         $arr = [
             'status' => 200,
             'success' => true,
@@ -60,6 +67,7 @@ class BillController extends Controller
         ];
         return response()->json($arr, 201);
     }
+
     public function update(Request $request, Bill $bill)
     {
         $input = $request->all();
@@ -68,6 +76,13 @@ class BillController extends Controller
         ]);
         $bill->statusID = $input['statusID'];
         $bill->save();
+        $dataBill = Bill::find($bill);
+        Notification::create([
+            'billID' => $bill->id,
+            'userID' => $bill->userID,
+            'content' => "Đơn hàng của bạn " . $bill->status->name,
+            'notiLevel' => 1
+        ]);
         if ($validator->fails()) {
             $arr = [
                 'success' => false,
@@ -76,7 +91,7 @@ class BillController extends Controller
             ];
             return response()->json($arr, 400);
         }
-        
+
         $arr = [
             'status' => true,
             'message' => 'Bill updated successfully',
