@@ -16,8 +16,17 @@ class Comment extends JsonResource
     {
         return [
             'id' => $this->id,
-            'userID' => $this->userID,
-            'productID' => $this->productID,
+            'user' => [
+                'userID' => $this->userID,
+                'name' => $this->user->name,
+                'avatar' => $this->user->avatar,
+            ],
+            'product' => [
+                'productID' => $this->productID,
+                'name' => $this->product->name,
+                'img1' => $this->product->img1,
+
+            ],
             'content' => $this->content,
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
