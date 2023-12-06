@@ -12,30 +12,18 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        $arr = [
-            'status' => true,
-            'message' => "List product",
-            'data' => \App\Http\Resources\Product::collection($products)
-        ];
-        return response()->json($arr, 200);
+        return $this->successResponse("List product", \App\Http\Resources\Product::collection($products));
     }
 
     public function create()
     {
-        $products = Product::latest()->take(4)->get();
-        $arr = [
-            'status' => true,
-            'message' => "List 4 product new",
-            'data' => \App\Http\Resources\Product::collection($products)
-        ];
-
-        return response()->json($arr, 200);
+        $products = Product::orderBy('id', 'desc')->take(4)->get();
+        return $this->successResponse("List 4 product new", \App\Http\Resources\Product::collection($products));
     }
 
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'categoryID' => 'required',
             'sizeID' => 'required',
@@ -47,81 +35,45 @@ class ProductController extends Controller
             'oldPrice' => 'required',
             'description' => 'required',
         ]);
-        if ($validator->fails()) {
-            $arr = [
-                'success' => false,
-                'message' => 'Input value error',
-                'data' => $validator->errors()
-            ];
-            return response()->json($arr, 200);
-        }
-        $product = Product::create($input);
-        $arr = [
-            'status' => true,
-            'message' => "Create Product successfuly",
-            'data' => new \App\Http\Resources\Product($product)
-        ];
-        return response()->json($arr, 201);
-    }
 
+        if ($validator->fails()) {
+            return $this->errorResponse('Input value error', $validator->errors(), 400);
+        }
+
+        $product = Product::create($request->all());
+        return $this->successResponse("Create Product successfully", new \App\Http\Resources\Product($product), 201);
+    }
 
     public function show(string $id)
     {
         $product = Product::find($id);
-        if (is_null($product)) {
-            $arr = [
-                'success' => false,
-                'message' => 'Product does not exits',
-                'dara' => []
-            ];
-            return response()->json($arr, 200);
-        }
-        $arr = [
-            'status' => true,
-            'message' => "Detail Product",
-            'data' => new \App\Http\Resources\Product($product)
-        ];
-        return response()->json($arr, 201);
-    }
 
+        if (is_null($product)) {
+            return $this->errorResponse('Product does not exist', null, 404);
+        }
+
+        return $this->successResponse("Detail Product", new \App\Http\Resources\Product($product));
+    }
 
     public function edit(int $id)
     {
         $randomProducts = Product::inRandomOrder()->take($id)->get();
-
-        $arr = [
-            'status' => true,
-            'message' => "List $id product ramdom",
-            'data' => \App\Http\Resources\Product::collection($randomProducts)
-        ];
-
-        return response()->json($arr, 200);
+        return $this->successResponse("List $id product random", \App\Http\Resources\Product::collection($randomProducts));
     }
 
     public function update(Request $request, Product $product)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'price' => 'required'
         ]);
+
         if ($validator->fails()) {
-            $arr = [
-                'success' => false,
-                'message' => 'Input error value',
-                'data' => $validator->errors()
-            ];
-            return response()->json($arr, 200);
+            return $this->errorResponse('Input error value', $validator->errors(), 400);
         }
-        $product->name = $input['name'];
-        $product->price = $input['price'];
-        $product->save();
-        $arr = [
-            'status' => true,
-            'message' => 'Product update successfuly',
-            'data' => new \App\Http\Resources\Product($product)
-        ];
-        return response()->json($arr, 200);
+
+        $product->update($request->only(['name', 'price']));
+        return $this->successResponse('Product update successfully', new \App\Http\Resources\Product($product));
     }
 
     public function destroy($id)
@@ -129,52 +81,37 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            $arr = [
-                'status' => 404,
-                'success' => false,
-                'message' => 'Product does not exist ',
-            ];
-            return response()->json($arr, 404);
+            return $this->errorResponse('Product does not exist', null, 404);
         }
 
         $product->delete();
 
-        $arr = [
-            'status' => 200,
-            'success' => true,
-            'message' => 'Product delete successfully',
-        ];
-
-        return response()->json($arr, 200);
+        return $this->successResponse('Product delete successfully');
     }
 
     public function search(Request $request)
     {
-        $keyword = $request->input('keyword');
-
-        $validator = Validator::make(['keyword' => $keyword], [
+        $validator = Validator::make($request->all(), [
             'keyword' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
-            $arr = [
-                'status' => false,
-                'message' => 'Input value error',
-                'data' => $validator->errors(),
-            ];
-            return response()->json($arr, 422);
+            return $this->errorResponse('Input value error', $validator->errors(), 400);
         }
 
-        $products = Product::where(function (Builder $query) use ($keyword) {
-            $query->where('name', 'like', '%' . $keyword . '%');
-        })->get();
+        $keyword = $request->input('keyword');
+        $products = Product::where('name', 'like', '%' . $keyword . '%')->get();
 
-        $arr = [
-            'status' => true,
-            'message' => "Search results for '$keyword'",
-            'data' => \App\Http\Resources\Product::collection($products),
-        ];
+        return $this->successResponse("Search results for '$keyword'", \App\Http\Resources\Product::collection($products));
+    }
 
-        return response()->json($arr, 200);
+    private function successResponse($message, $data = null, $status = 200)
+    {
+        return response()->json(['status' => true, 'message' => $message, 'data' => $data], $status);
+    }
+
+    private function errorResponse($message, $data = null, $status = 404)
+    {
+        return response()->json(['status' => false, 'message' => $message, 'data' => $data], $status);
     }
 }
