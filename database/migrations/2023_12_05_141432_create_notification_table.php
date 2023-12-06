@@ -13,24 +13,23 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('productID');
             $table->unsignedBigInteger('userID');
             $table->string('content');
+            $table->unsignedBigInteger('productID')->nullable();
+            $table->unsignedBigInteger('billID')->nullable();
             $table->unsignedBigInteger('notiLevel');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
-            $table->foreign('productID')->references('id')->on('products')
-                ->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
             $table->foreign('userID')->references('id')->on('users')
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('notiLevel')->references('id')->on('noti_Level')
+            $table->foreign('notiLevel')->references('id')->on('notiLevel')
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->foreign('billID')->references('id')->on('bills');
+            $table->foreign('productID')->references('id')->on('products');
         });
     }
 

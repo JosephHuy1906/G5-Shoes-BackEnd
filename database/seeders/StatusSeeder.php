@@ -14,11 +14,11 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         $status = [
-            ['name' => 'Chờ xác nhận'],
-            ['name' => 'Đã xác nhận'],
-            ['name' => 'Đang giao hàng'],
-            ['name' => 'Giao hàng thành công'],
-            ['name' => 'Đã huỷ'],
+            ['name' => 'đang chờ xác nhận'],
+            ['name' => 'đã xác nhận'],
+            ['name' => 'đang giao hàng'],
+            ['name' => 'đã giao hàng thành công'],
+            ['name' => 'đã huỷ'],
         ];
         DB::table('status')->insert($status);
     }

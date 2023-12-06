@@ -16,10 +16,11 @@ class Notification extends JsonResource
     {
         return [
             'id' => $this->id,
+            'bill' =>  $this->billID,
             'product' => [
-                'productID' => $this->productID,
+                'id' => $this->productID,
                 'name' => $this->product->name,
-                'img1' => $this->product->img1,
+                'img1' => $this->product->avatar,
             ],
             'user' => [
                 'userID' => $this->userID,

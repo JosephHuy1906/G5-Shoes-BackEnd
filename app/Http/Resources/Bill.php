@@ -26,7 +26,7 @@ class Bill extends JsonResource
             'phone' => $this->phone,
             'status' => [
                 'statusID' => $this->statusID,
-                'status_name' => $this->status->name,
+                'name' => $this->status->name,
             ],
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
