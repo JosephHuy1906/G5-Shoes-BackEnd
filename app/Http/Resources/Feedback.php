@@ -16,8 +16,16 @@ class Feedback extends JsonResource
     {
         return [
             'id' => $this->id,
-            'commentID' => $this->commentID,
-            'userID' => $this->userID,
+            'comment' => [
+                'commentID' => $this->commentID,
+                'content' => $this->comment->content,
+
+            ],
+            'user' => [
+                'userID' => $this->userID,
+                'name' => $this->user->name,
+                'avatar' => $this->user->avatar,
+            ],
             'content' => $this->content,
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),

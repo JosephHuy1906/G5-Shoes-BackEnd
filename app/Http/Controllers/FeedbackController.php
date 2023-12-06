@@ -23,4 +23,24 @@ class FeedbackController extends Controller
         $product = Feedback::create($request->all());
         return $this->successResponse("Create Product successfully", new \App\Http\Resources\Feedback($product), 201);
     }
+
+    public function show(string $id)
+    {
+        $feedback = Feedback::where('commentID', $id)->get();
+
+        if ($feedback->isEmpty()) {
+            return $this->errorResponse("No feedback found in comment with ID $id", null, 404);
+        }
+
+        return $this->successResponse("List feedback in comment with ID $id", \App\Http\Resources\Feedback::collection($feedback));
+    }
+    private function successResponse($message, $data = null, $status = 200)
+    {
+        return response()->json(['status' => true, 'message' => $message, 'data' => $data], $status);
+    }
+
+    private function errorResponse($message, $data = null, $status = 404)
+    {
+        return response()->json(['status' => false, 'message' => $message, 'data' => $data], $status);
+    }
 }

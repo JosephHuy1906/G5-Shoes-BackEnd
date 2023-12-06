@@ -65,11 +65,11 @@ class CategoryController extends Controller
     {
         $products = Product::where('categoryID', $id)->get();
 
-    if ($products->isEmpty()) {
-        return $this->errorResponse("No products found in category with ID $id", null, 404);
-    }
+        if ($products->isEmpty()) {
+            return $this->errorResponse("No products found in category with ID $id", null, 404);
+        }
 
-    return $this->successResponse("List products in category with ID $id", \App\Http\Resources\Product::collection($products));
+        return $this->successResponse("List products in category with ID $id", \App\Http\Resources\Product::collection($products));
     }
 
     private function successResponse($message, $data = null, $status = 200)
