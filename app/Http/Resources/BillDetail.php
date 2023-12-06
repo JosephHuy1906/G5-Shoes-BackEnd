@@ -17,7 +17,13 @@ class BillDetail extends JsonResource
         return [
             'id' => $this->id,
             'billID' => $this->billID,
-            'productID' => $this->productID,
+            'product' => [
+                'productID' => $this->productID,
+                'name' => $this->product->name,
+                'img1' => $this->product->img1,
+                'newPrice' => $this->product->newPrice,
+                'oldPrice' => $this->product->oldPrice,
+            ],
             'sizeID' => $this->sizeID,
             'userID' => $this->userID,
             'price' => $this->price,

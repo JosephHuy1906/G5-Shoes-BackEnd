@@ -69,4 +69,22 @@ class BillDetailController extends Controller
 
         return response()->json($arr, 201);
     }
+    public function show(string $id)
+    {
+        $billDetail = BillDetail::where('billID', $id)->get();
+        if ($billDetail->isEmpty()) {
+            return $this->errorResponse("No bill found in bill detail with ID $id", null, 404);
+        }
+        return $this->successResponse("List bill detail by bill", \App\Http\Resources\BillDetail::collection($billDetail));
+    }
+
+    private function successResponse($message, $data = null, $status = 200)
+    {
+        return response()->json(['status' => true, 'message' => $message, 'data' => $data], $status);
+    }
+
+    private function errorResponse($message, $data = null, $status = 404)
+    {
+        return response()->json(['status' => false, 'message' => $message, 'data' => $data], $status);
+    }
 }

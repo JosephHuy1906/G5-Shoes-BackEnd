@@ -38,11 +38,9 @@ class CommentController extends Controller
     public function show(string $id)
     {
         $comment = Comment::where('productID', $id)->get();
-
         if ($comment->isEmpty()) {
             return $this->errorResponse("No comment found in product with ID $id", null, 404);
         }
-
         return $this->successResponse("List comment in product with ID $id", \App\Http\Resources\Comment::collection($comment));
     }
 

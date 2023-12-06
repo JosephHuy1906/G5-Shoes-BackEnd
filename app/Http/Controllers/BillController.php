@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Validator;
 
 class BillController extends Controller
 {
-
+    public function index()
+    {
+        $bills = Bill::all();
+        return $this->successResponse("List Bill", ResourcesBill::collection($bills));
+    }
     public function edit(int $id)
     {
         $bills = Bill::with('status')->where('userID', $id)->get();
@@ -25,7 +29,7 @@ class BillController extends Controller
 
         ], 200);
     }
-    
+
     public function store(Request $request)
     {
         $input = $request->all();

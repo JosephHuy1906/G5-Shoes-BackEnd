@@ -18,8 +18,13 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = Auth::attempt($credentials)) {
+            // Bắt lỗi khi nhập mật khẩu sai hoặc email sai
+            return response()->json([
+                'success' => false,
+                'status' => 401,
+                'message' => 'Email or password incorrect'
+            ], 401);
         }
 
         $refreshToken = $this->createRefreshToken();
@@ -34,7 +39,8 @@ class AuthController extends Controller
             return response()->json(auth()->user());
         } catch (\Exception $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
+                'status' => 500,
                 'message' => 'Token Unauthorized'
             ], 500);
         }
@@ -45,7 +51,8 @@ class AuthController extends Controller
         auth()->logout();
 
         return response()->json([
-            'status' => true,
+            'success' => true,
+            'status' => 200,
             'message' => 'Successfully logged out'
         ], 200);
     }
@@ -58,7 +65,8 @@ class AuthController extends Controller
             $user = User::find($decoded['user_id']);
             if (!$user) {
                 return response()->json([
-                    'status' => false,
+                    'success' => false,
+                    'status' => 404,
                     'message' => 'User not found'
                 ], 404);
             }
@@ -69,7 +77,8 @@ class AuthController extends Controller
             return  $this->respondWithToken($token, $refreshToken);
         } catch (JWTException $e) {
             return response()->json([
-                'status' => false,
+                'success' => false,
+                'status' => 500,
                 'message' => 'Refresh token in Invald'
             ], 500);
         }

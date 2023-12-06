@@ -8,5 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class BillDetail extends Model
 {
     use HasFactory;
-    protected $fillable = ['billID','productID','sizeID','userID','price','quantity'] ;
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productID');
+    }
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'sizeID');
+    }
+    protected $fillable = [
+        'billID',
+        'productID',
+        'sizeID',
+        'userID',
+        'price',
+        'quantity'
+    ];
 }
