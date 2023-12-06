@@ -76,7 +76,6 @@ class BillController extends Controller
         ]);
         $bill->statusID = $input['statusID'];
         $bill->save();
-        $dataBill = Bill::find($bill);
         Notification::create([
             'billID' => $bill->id,
             'userID' => $bill->userID,

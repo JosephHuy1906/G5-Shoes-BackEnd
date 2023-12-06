@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
@@ -104,6 +106,7 @@ class ProductController extends Controller
 
         return $this->successResponse("Search results for '$keyword'", \App\Http\Resources\Product::collection($products));
     }
+   
 
     private function successResponse($message, $data = null, $status = 200)
     {
