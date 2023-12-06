@@ -6,18 +6,17 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class LevelSeeder extends Seeder
+class Noti_LevelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-
-        $level = [
-            ['name' => 'Admin'],
-            ['name' => 'User'],
+        $notilevel = [
+            ['name' => 'Oder'],
+            ['name' => 'Comment'],
         ];
-        DB::table('level')->insert($level);
+        DB::table('notiLevel')->insert($notilevel);
     }
 }

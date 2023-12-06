@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -9,10 +10,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = \App\Models\Product::all();
+        $products = Product::all();
         $arr = [
             'status' => true,
-            'message' => "Danh sách sản phẩm",
+            'message' => "List product",
             'data' => \App\Http\Resources\Product::collection($products)
         ];
         return response()->json($arr, 200);
@@ -20,10 +21,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        $products = \App\Models\Product::latest()->take(4)->get();
+        $products = Product::latest()->take(4)->get();
         $arr = [
             'status' => true,
-            'message' => "Danh sách 4 sản phẩm mới nhất",
+            'message' => "List 4 product new",
             'data' => \App\Http\Resources\Product::collection($products)
         ];
 
@@ -48,15 +49,15 @@ class ProductController extends Controller
         if ($validator->fails()) {
             $arr = [
                 'success' => false,
-                'message' => 'Lỗi kiểm tra dữ liệu',
+                'message' => 'Input value error',
                 'data' => $validator->errors()
             ];
             return response()->json($arr, 200);
         }
-        $product = \App\Models\Product::create($input);
+        $product = Product::create($input);
         $arr = [
             'status' => true,
-            'message' => "Sản phẩm đã lưu thành công",
+            'message' => "Create Product successfuly",
             'data' => new \App\Http\Resources\Product($product)
         ];
         return response()->json($arr, 201);
@@ -65,18 +66,18 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
-        $product = \App\Models\Product::find($id);
+        $product = Product::find($id);
         if (is_null($product)) {
             $arr = [
                 'success' => false,
-                'message' => 'Không có sản phẩm này',
+                'message' => 'Product does not exits',
                 'dara' => []
             ];
             return response()->json($arr, 200);
         }
         $arr = [
             'status' => true,
-            'message' => "Chi tiết sản phẩm ",
+            'message' => "Detail Product",
             'data' => new \App\Http\Resources\Product($product)
         ];
         return response()->json($arr, 201);
@@ -85,18 +86,18 @@ class ProductController extends Controller
 
     public function edit(int $id)
     {
-        $randomProducts = \App\Models\Product::inRandomOrder()->take($id)->get();
+        $randomProducts = Product::inRandomOrder()->take($id)->get();
 
         $arr = [
             'status' => true,
-            'message' => "Danh sách $id sản phẩm ngẫu nhiên",
+            'message' => "List $id product ramdom",
             'data' => \App\Http\Resources\Product::collection($randomProducts)
         ];
 
         return response()->json($arr, 200);
     }
 
-    public function update(Request $request, \App\Models\Product $product)
+    public function update(Request $request, Product $product)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -106,7 +107,7 @@ class ProductController extends Controller
         if ($validator->fails()) {
             $arr = [
                 'success' => false,
-                'message' => 'Lỗi kiểm tra dữ liệu',
+                'message' => 'Input error value',
                 'data' => $validator->errors()
             ];
             return response()->json($arr, 200);
@@ -116,20 +117,33 @@ class ProductController extends Controller
         $product->save();
         $arr = [
             'status' => true,
-            'message' => 'Sản phẩm cập nhật thành công',
+            'message' => 'Product update successfuly',
             'data' => new \App\Http\Resources\Product($product)
         ];
         return response()->json($arr, 200);
     }
 
-    public function destroy(\App\Models\Product $product)
+    public function destroy($id)
     {
+        $product = Product::find($id);
+
+        if (!$product) {
+            $arr = [
+                'status' => 404,
+                'success' => false,
+                'message' => 'Product does not exist ',
+            ];
+            return response()->json($arr, 404);
+        }
+
         $product->delete();
+
         $arr = [
-            'status' => true,
-            'message' => 'Sản phẩm đã được xóa',
-            'data' => [],
+            'status' => 200,
+            'success' => true,
+            'message' => 'Product delete successfully',
         ];
+
         return response()->json($arr, 200);
     }
 }

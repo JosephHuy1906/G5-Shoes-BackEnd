@@ -35,4 +35,4 @@ Route::resource('bill', BillController::class);
 Route::resource('billdetail', BillDetailController::class);
 Route::resource('comment', CommentController::class);
 Route::resource('feedback', FeedbackController::class);
-Route::resource('notication', NotificationController::class);
+Route::resource('notification', NotificationController::class);

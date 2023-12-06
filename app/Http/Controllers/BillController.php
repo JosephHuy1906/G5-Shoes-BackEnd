@@ -14,16 +14,10 @@ class BillController extends Controller
     public function edit(int $id)
     {
         $bills = Bill::with('status')->where('userID', $id)->get();
-        $user = User::find($id);
-        $userData = [
-            'name' => $user->name,
-            'avatar' => $user->avatar,
-        ];
-
         return response()->json([
             'status' => 200,
             'success' => true,
-            'message' => "Danh sách bill của user ",
+            'message' => "List bill for user ",
             'data' =>  $bills->map(function ($item) {
                 return new ResourcesBill($item);
             })
@@ -44,7 +38,7 @@ class BillController extends Controller
             $arr = [
                 'status' => 404,
                 'success' => false,
-                'message' => 'Lỗi kiểm tra dữ liệu',
+                'message' => 'Input value error',
                 'data' => $validator->errors()
             ];
             return response()->json($arr, 404);
@@ -61,9 +55,33 @@ class BillController extends Controller
         $arr = [
             'status' => 200,
             'success' => true,
-            'message' => "Bill đã được thêm",
-            'data' => new \App\Http\Resources\Bill($bill)
+            'message' => "Create bill success",
+            'data' => new ResourcesBill($bill)
         ];
         return response()->json($arr, 201);
+    }
+    public function update(Request $request, Bill $bill)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'statusID' => 'required',
+        ]);
+        $bill->statusID = $input['statusID'];
+        $bill->save();
+        if ($validator->fails()) {
+            $arr = [
+                'success' => false,
+                'message' => 'Input error value',
+                'data' => $validator->errors()
+            ];
+            return response()->json($arr, 400);
+        }
+        
+        $arr = [
+            'status' => true,
+            'message' => 'Bill updated successfully',
+            'data' => new ResourcesBill($bill)
+        ];
+        return response()->json($arr, 200);
     }
 }
