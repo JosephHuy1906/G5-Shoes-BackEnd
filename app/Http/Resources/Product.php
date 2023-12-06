@@ -16,9 +16,9 @@ class Product extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tensp' => $this->name,
-            'cateID' => $this->categoryID,
-            'size' => $this->sizeID,
+            'name' => $this->name,
+            'categoryID' => $this->category->name,
+            'sizeID' => $this->size->name,
             'img1' => $this->img1,
             'img2' => $this->img2,
             'img3' => $this->img3,

@@ -65,16 +65,42 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'price' => 'required'
+            'categoryID' => 'required',
+            'sizeID' => 'required',
+            'img1' => 'required',
+            'img2' => 'required',
+            'img3' => 'required',
+            'img4' => 'required',
+            'newPrice' => 'required',
+            'oldPrice' => 'required',
+            'description' => 'required',
         ]);
 
         if ($validator->fails()) {
             return $this->errorResponse('Input error value', $validator->errors(), 400);
         }
 
-        $product->update($request->only(['name', 'price']));
-        return $this->successResponse('Product update successfully', new \App\Http\Resources\Product($product));
+        $data = $request->only([
+            'name',
+            'categoryID',
+            'sizeID',
+            'img1',
+            'img2',
+            'img3',
+            'img4',
+            'newPrice',
+            'oldPrice',
+            'description',
+        ]);
+
+        // Thực hiện update và kiểm tra xem có thành công hay không
+        if ($product->update($data)) {
+            return $this->successResponse('Product update successfully', new \App\Http\Resources\Product($product));
+        } else {
+            return $this->errorResponse('Failed to update product', null, 500);
+        }
     }
+
 
     public function destroy($id)
     {
