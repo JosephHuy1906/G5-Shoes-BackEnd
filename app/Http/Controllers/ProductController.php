@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -142,6 +143,36 @@ class ProductController extends Controller
             'status' => 200,
             'success' => true,
             'message' => 'Product delete successfully',
+        ];
+
+        return response()->json($arr, 200);
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $validator = Validator::make(['keyword' => $keyword], [
+            'keyword' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            $arr = [
+                'status' => false,
+                'message' => 'Input value error',
+                'data' => $validator->errors(),
+            ];
+            return response()->json($arr, 422);
+        }
+
+        $products = Product::where(function (Builder $query) use ($keyword) {
+            $query->where('name', 'like', '%' . $keyword . '%');
+        })->get();
+
+        $arr = [
+            'status' => true,
+            'message' => "Search results for '$keyword'",
+            'data' => \App\Http\Resources\Product::collection($products),
         ];
 
         return response()->json($arr, 200);

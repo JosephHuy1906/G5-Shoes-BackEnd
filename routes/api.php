@@ -28,6 +28,7 @@ Route::group([
 
 Route::post('/auth/register', [UserController::class, 'createUser']);
 // Route::post('/auth/login', [UserController::class, 'loginUser']);
+Route::get('/products/search', [ProductController::class, 'search']);
 
 Route::resource('products', ProductController::class);
 Route::resource('categorys', CategoryController::class);
