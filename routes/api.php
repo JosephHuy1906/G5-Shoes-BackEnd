@@ -21,12 +21,12 @@ Route::group([
 ], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', 'AuthController@logout');
-    Route::get('refresh', 'AuthController@refresh');
-    Route::post('profile', 'AuthController@me');
+    Route::get('profile', [AuthController::class, 'profile']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
 });
 
-// Route::post('/auth/register', [UserController::class, 'createUser']);
+Route::post('/auth/register', [UserController::class, 'createUser']);
 // Route::post('/auth/login', [UserController::class, 'loginUser']);
 
 Route::resource('products', ProductController::class);
