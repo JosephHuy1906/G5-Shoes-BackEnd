@@ -59,8 +59,8 @@ class ProductController extends Controller
 
     public function edit(int $id)
     {
-        $randomProducts = Product::inRandomOrder()->take($id)->get();
-        return $this->successResponse("List $id product random", \App\Http\Resources\Product::collection($randomProducts));
+        $highestOldPriceProducts = Product::orderBy('oldPrice', 'desc')->take($id)->get();
+        return $this->successResponse("List $id products with highest oldPrice", \App\Http\Resources\Product::collection($highestOldPriceProducts));
     }
 
     public function update(Request $request, Product $product)
