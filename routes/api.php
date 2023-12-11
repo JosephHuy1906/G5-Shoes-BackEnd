@@ -31,7 +31,8 @@ Route::prefix('user')->group(function () {
 });
 
 Route::get('/products/search', [ProductController::class, 'search']);
-
+Route::get('/products/ramdom', [ProductController::class, 'getProductRamdom']);
+Route::get('/products-page', [ProductController::class, 'getProductPage']);
 
 
 Route::resource('products', ProductController::class);

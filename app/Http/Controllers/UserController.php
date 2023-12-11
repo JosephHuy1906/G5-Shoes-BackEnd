@@ -119,10 +119,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'avatar' => 'required',
-            'phone' => 'required',
-            'address' => 'required'
+            'name',
+            'avatar',
+            'phone',
+            'address'
         ]);
 
         if ($validator->fails()) {

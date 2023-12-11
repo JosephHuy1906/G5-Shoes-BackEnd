@@ -66,16 +66,16 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'categoryID' => 'required',
-            'sizeID' => 'required',
-            'img1' => 'required',
-            'img2' => 'required',
-            'img3' => 'required',
-            'img4' => 'required',
-            'newPrice' => 'required',
-            'oldPrice' => 'required',
-            'description' => 'required',
+            'name',
+            'categoryID',
+            'sizeID',
+            'img1',
+            'img2',
+            'img3',
+            'img4',
+            'newPrice',
+            'oldPrice',
+            'description',
         ]);
 
         if ($validator->fails()) {
@@ -102,8 +102,6 @@ class ProductController extends Controller
             return $this->errorResponse('Failed to update product', null, 500);
         }
     }
-
-
     public function destroy($id)
     {
         $product = Product::find($id);
@@ -132,7 +130,20 @@ class ProductController extends Controller
 
         return $this->successResponse("Search results for '$keyword'", \App\Http\Resources\Product::collection($products));
     }
-   
+
+    public function getProductRamdom()
+    {
+        $randomProducts = Product::inRandomOrder()->take(4)->get();
+        return $this->successResponse("List product random", \App\Http\Resources\Product::collection($randomProducts));
+    }
+
+    public function getProductPage(Request $request)
+    {
+        $page = $request->query('page', 1);
+        $pageSize = $request->query('pageSize', 6);
+        $products = Product::paginate($pageSize, ['*'], 'page', $page);
+        return $this->successResponse("List product", \App\Http\Resources\Product::collection($products));
+    }
 
     private function successResponse($message, $data = null, $status = 200)
     {
