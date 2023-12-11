@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('userID');
             $table->string('content');
             $table->unsignedBigInteger('productID')->nullable();
-            $table->unsignedBigInteger('billID')->nullable();
+            $table->unsignedBigInteger('oderID')->nullable();
             $table->unsignedBigInteger('notiLevel');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
@@ -28,7 +28,7 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('billID')->references('id')->on('bills');
+            $table->foreign('oderID')->references('id')->on('oders');
             $table->foreign('productID')->references('id')->on('products');
         });
     }

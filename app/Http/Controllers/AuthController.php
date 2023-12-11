@@ -36,7 +36,12 @@ class AuthController extends Controller
     {
         try {
 
-            return response()->json(auth()->user());
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => 'get user successfuly',
+                'data' => auth()->user()
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BillDetail extends JsonResource
+class OderDetail extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,7 @@ class BillDetail extends JsonResource
     {
         return [
             'id' => $this->id,
-            'billID' => $this->billID,
+            'oderID' => $this->oderID,
             'product' => [
                 'productID' => $this->productID,
                 'name' => $this->product->name,
@@ -24,8 +24,7 @@ class BillDetail extends JsonResource
                 'newPrice' => $this->product->newPrice,
                 'oldPrice' => $this->product->oldPrice,
             ],
-            'sizeID' => $this->sizeID,
-            'userID' => $this->userID,
+            'size' => $this->size,
             'price' => $this->price,
             'quantity' => $this->quantity,
             'created_at' => $this->created_at->format('d/m/Y'),

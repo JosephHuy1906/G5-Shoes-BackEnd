@@ -20,7 +20,7 @@ class Notification extends Model
     }
     public function bill()
     {
-        return $this->belongsTo(Bill::class, 'billID');
+        return $this->belongsTo(Oder::class, 'oderID');
     }
     public function product()
     {
@@ -28,7 +28,7 @@ class Notification extends Model
     }
     protected $fillable = [
         'productID',
-        'billID',
+        'oderID',
         'userID',
         'content',
         'notiLevel'

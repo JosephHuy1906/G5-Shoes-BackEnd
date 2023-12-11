@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BillDetail;
 use App\Models\Product;
-use App\Models\Bill;
+use App\Models\Oder;
+use App\Models\OderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BillDetailController extends Controller
+class OderDetailController extends Controller
 {
     public function store(Request $request)
     {
         $jsonData = $request->json()->all();
 
         $validator = Validator::make($jsonData, [
-            '*.billID' => 'required|exists:bills,id',
+            '*.oderID' => 'required|exists:oders,id',
             '*.productID' => 'required|exists:products,id',
-            '*.sizeID' => 'required', // Cần kiểm tra và chỉnh sửa nếu có
-            '*.userID' => 'required',
+            '*.size' => 'required', 
             '*.price' => 'required',
             '*.quantity' => 'required'
         ]);
@@ -36,9 +35,9 @@ class BillDetailController extends Controller
         foreach ($jsonData as $input) {
             // Kiểm tra sự tồn tại của sản phẩm và hóa đơn
             $product = Product::find($input['productID']);
-            $bill = Bill::find($input['billID']);
+            $oder = Oder::find($input['oderID']);
 
-            if (!$product || !$bill) {
+            if (!$product || !$oder) {
                 $arr = [
                     'status' => 404,
                     'success' => false,
@@ -51,11 +50,10 @@ class BillDetailController extends Controller
             // ...
 
             // Thêm chi tiết hóa đơn
-            BillDetail::create([
-                'billID' => $input['billID'],
+            OderDetail::create([
+                'oderID' => $input['oderID'],
                 'productID' => $input['productID'],
-                'sizeID' => $input['sizeID'],
-                'userID' => $input['userID'],
+                'size' => $input['size'],
                 'price' => $input['price'],
                 'quantity' => $input['quantity'],
             ]);
@@ -64,18 +62,18 @@ class BillDetailController extends Controller
         $arr = [
             'status' => 201,
             'success' => true,
-            'message' => "Bill detail đã được thêm",
+            'message' => "Oder detail đã được thêm",
         ];
 
         return response()->json($arr, 201);
     }
     public function show(string $id)
     {
-        $billDetail = BillDetail::where('billID', $id)->get();
-        if ($billDetail->isEmpty()) {
-            return $this->errorResponse("No bill found in bill detail with ID $id", null, 404);
+        $oderDetail = OderDetail::where('oderID', $id)->get();
+        if ($oderDetail->isEmpty()) {
+            return $this->errorResponse("No oder found in oder detail with ID $id", null, 404);
         }
-        return $this->successResponse("List bill detail by bill", \App\Http\Resources\BillDetail::collection($billDetail));
+        return $this->successResponse("List oder detail by oder", \App\Http\Resources\OderDetail::collection($oderDetail));
     }
 
     private function successResponse($message, $data = null, $status = 200)

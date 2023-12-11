@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Bill as ResourcesBill;
-use App\Models\Bill;
+use App\Http\Resources\Oder as ResourcesOder;
+use App\Models\Oder;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BillController extends Controller
+class OderController extends Controller
 {
     public function index()
     {
-        $bills = Bill::all();
-        return $this->successResponse("List Bill", ResourcesBill::collection($bills));
+        $oders = Oder::all();
+        return $this->successResponse("List oder", ResourcesOder::collection($oders));
     }
     public function edit(int $id)
     {
-        $bills = Bill::with('status')->where('userID', $id)->get();
+        $oders = Oder::with('status')->where('userID', $id)->get();
         return response()->json([
             'status' => 200,
             'success' => true,
-            'message' => "List bill for user ",
-            'data' =>  $bills->map(function ($item) {
-                return new ResourcesBill($item);
+            'message' => "List oder for user ",
+            'data' =>  $oders->map(function ($item) {
+                return new ResourcesOder($item);
             })
 
         ], 200);
@@ -56,34 +56,34 @@ class BillController extends Controller
                 'message' => 'User is already exist'
             ], 400);
         }
-        $bill = Bill::create([...$input, 'statusID' => 1]);
+        $oder = Oder::create([...$input, 'statusID' => 1]);
         Notification::create([
-            'bill' => $bill->id,
+            'oder' => $oder->id,
             'userID' => $request->userID,
-            'content' => "Đơn hàng của bạn " . $bill->status->name,
+            'content' => "Đơn hàng của bạn " . $oder->status->name,
             'notiLevel' => 1
         ]);
         $arr = [
             'status' => 200,
             'success' => true,
-            'message' => "Create bill success",
-            'data' => new ResourcesBill($bill)
+            'message' => "Create oder success",
+            'data' => new ResourcesOder($oder)
         ];
         return response()->json($arr, 201);
     }
 
-    public function update(Request $request, Bill $bill)
+    public function update(Request $request, Oder $oder)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
             'statusID' => 'required',
         ]);
-        $bill->statusID = $input['statusID'];
-        $bill->save();
+        $oder->statusID = $input['statusID'];
+        $oder->save();
         Notification::create([
-            'billID' => $bill->id,
-            'userID' => $bill->userID,
-            'content' => "Đơn hàng của bạn " . $bill->status->name,
+            'oderID' => $oder->id,
+            'userID' => $oder->userID,
+            'content' => "Đơn hàng của bạn " . $oder->status->name,
             'notiLevel' => 1
         ]);
         if ($validator->fails()) {
@@ -97,8 +97,8 @@ class BillController extends Controller
 
         $arr = [
             'status' => true,
-            'message' => 'Bill updated successfully',
-            'data' => new ResourcesBill($bill)
+            'message' => 'Oder updated successfully',
+            'data' => new ResourcesOder($oder)
         ];
         return response()->json($arr, 200);
     }

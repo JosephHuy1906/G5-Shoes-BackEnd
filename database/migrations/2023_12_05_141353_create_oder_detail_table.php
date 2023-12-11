@@ -11,26 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill_details', function (Blueprint $table) {
+        Schema::create('oder_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('billID');
+            $table->unsignedBigInteger('oderID');
             $table->unsignedBigInteger('productID');
-            $table->unsignedBigInteger('sizeID');
-            $table->unsignedBigInteger('userID');
+            $table->integer('size');
             $table->integer('price');
             $table->integer('quantity');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
-            $table->foreign('billID')->references('id')->on('bills')->constrained()
+            $table->foreign('oderID')->references('id')->on('oders')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->foreign('productID')->references('id')->on('products')->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('userID')->references('id')->on('users')->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('sizeID')->references('id')->on('size')->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -41,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bill_details');
+        Schema::dropIfExists('oder_details');
     }
 };

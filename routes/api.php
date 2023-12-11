@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BillController;
-use App\Http\Controllers\BillDetailController;
+use App\Http\Controllers\OderController;
+use App\Http\Controllers\OderDetailController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
@@ -37,9 +37,9 @@ Route::get('/products-page', [ProductController::class, 'getProductPage']);
 
 Route::resource('products', ProductController::class);
 Route::resource('categorys', CategoryController::class);
-Route::resource('bill', BillController::class);
+Route::resource('oder', OderController::class);
 Route::resource('users', UserController::class);
-Route::resource('billdetail', BillDetailController::class);
+Route::resource('oderdetail', OderDetailController::class);
 Route::resource('comment', CommentController::class);
 Route::resource('feedback', FeedbackController::class);
 Route::resource('notification', NotificationController::class);

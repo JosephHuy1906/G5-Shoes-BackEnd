@@ -16,7 +16,7 @@ class Notification extends JsonResource
     {
         return [
             'id' => $this->id,
-            'bill' =>  $this->billID,
+            'oder' =>  $this->oderID,
             'product' => [
                 'id' => $this->productID,
                 'name' => $this->product->name,
