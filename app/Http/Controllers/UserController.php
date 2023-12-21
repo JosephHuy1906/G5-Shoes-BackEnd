@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -120,7 +122,6 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name',
-            'avatar',
             'phone',
             'address'
         ]);
@@ -169,6 +170,36 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
+    public function updateAvatar(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'avatar' => 'required|image|mimes:png,jpg,jpeg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Input error value', $validator->errors(), 400);
+        }
+        $user = User::find($id);
+        if (!$user) {
+            return $this->errorResponse('User not found', null, 404);
+        }
+        $oldAvatarPath = str_replace(url('/') . '/api/', '', $user->avatar);
+        $avatar = $request->file('avatar');
+        $storagePath = 'images';
+        $filename = time() . '_' . $avatar->getClientOriginalName();
+        $avatar->storeAs($storagePath, $filename, 'public');
+        if ($oldAvatarPath && Storage::disk('public')->exists($oldAvatarPath)) {
+            Storage::disk('public')->delete($oldAvatarPath);
+        }
+        $baseUrl = Config::get('app.url');
+        $user->update([
+            'avatar' => $baseUrl . '/api/' . $storagePath . '/' . $filename,
+        ]);
+        return $this->successResponse('User update avatar successfully', new \App\Http\Resources\User($user));
+    }
+
 
 
     private function successResponse($message, $data = null, $status = 200)
