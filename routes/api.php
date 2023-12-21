@@ -9,10 +9,13 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('images/{filename}', [ImageController::class, 'getImage'])->name('images.get');
+Route::get('images/products/{filename}', [ImageController::class, 'getImageProduct'])->name('images.get');
 Route::group([
 
     'middleware' => 'api',
@@ -28,8 +31,10 @@ Route::group([
 Route::prefix('user')->group(function () {
     Route::post('/create', [UserController::class, 'createUser']);
     Route::put('/update-password/{user}', [UserController::class, 'updatePassword']);
+    Route::post('/update-avatar/{id}', [UserController::class, 'updateAvatar']);
 });
 
+Route::post('/products/{product}/update', [ProductController::class, 'updateProductInfo']);
 Route::get('/products/search', [ProductController::class, 'search']);
 Route::get('/products/ramdom', [ProductController::class, 'getProductRamdom']);
 Route::get('/products-page', [ProductController::class, 'getProductPage']);
