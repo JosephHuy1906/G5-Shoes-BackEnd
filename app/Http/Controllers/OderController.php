@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+// use App\Http\Resources\Oder as ResourcesOder;
+
 use App\Http\Resources\Oder as ResourcesOder;
 use App\Models\Oder;
 use App\Models\Notification;
@@ -19,15 +21,12 @@ class OderController extends Controller
     public function edit(int $id)
     {
         $oders = Oder::with('status')->where('userID', $id)->get();
-        return response()->json([
-            'status' => 200,
-            'success' => true,
-            'message' => "List oder for user ",
-            'data' =>  $oders->map(function ($item) {
-                return new ResourcesOder($item);
-            })
-
-        ], 200);
+        if (is_null($oders)) {
+            return $this->errorResponse('Oder does not exist', null, 404);
+        }
+        return $this->successResponse("List oder for user", $oders->map(function ($item) {
+            return new ResourcesOder($item);
+        }));
     }
 
     public function store(Request $request)
@@ -40,21 +39,12 @@ class OderController extends Controller
             'phone' => 'required',
         ]);
         if ($validator->fails()) {
-            $arr = [
-                'status' => 404,
-                'success' => false,
-                'message' => 'Input value error',
-                'data' => $validator->errors()
-            ];
-            return response()->json($arr, 404);
+            return $this->errorResponse('Input error value', $validator->errors(), 400);
         }
         $checkUser = User::find($request->userID);
         if (!$checkUser) {
-            return response()->json([
-                "status" => 400,
-                'success' => false,
-                'message' => 'User is already exist'
-            ], 400);
+
+            return $this->errorResponse('User is already exist', $validator->errors(), 400);
         }
         $oder = Oder::create([...$input, 'statusID' => 1]);
         Notification::create([
@@ -63,13 +53,7 @@ class OderController extends Controller
             'content' => "Đơn hàng của bạn " . $oder->status->name,
             'notiLevel' => 1
         ]);
-        $arr = [
-            'status' => 200,
-            'success' => true,
-            'message' => "Create oder success",
-            'data' => new ResourcesOder($oder)
-        ];
-        return response()->json($arr, 201);
+        return $this->successResponse('Create oder success', new ResourcesOder($oder));
     }
 
     public function update(Request $request, Oder $oder)
@@ -87,19 +71,19 @@ class OderController extends Controller
             'notiLevel' => 1
         ]);
         if ($validator->fails()) {
-            $arr = [
-                'success' => false,
-                'message' => 'Input error value',
-                'data' => $validator->errors()
-            ];
-            return response()->json($arr, 400);
+            return $this->errorResponse('Input error value', $validator->errors(), 400);
         }
 
-        $arr = [
-            'status' => true,
-            'message' => 'Oder updated successfully',
-            'data' => new ResourcesOder($oder)
-        ];
-        return response()->json($arr, 200);
+        return $this->successResponse('Oder updated successfully', new ResourcesOder($oder));
+    }
+
+    private function successResponse($message, $data = null, $status = 200)
+    {
+        return response()->json(['status' => true, 'message' => $message, 'data' => $data], $status);
+    }
+
+    private function errorResponse($message, $data = null, $status = 404)
+    {
+        return response()->json(['status' => false, 'message' => $message, 'data' => $data], $status);
     }
 }

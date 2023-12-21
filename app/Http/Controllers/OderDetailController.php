@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OderDetail as ResourcesOderDetail;
 use App\Models\Product;
 use App\Models\Oder;
 use App\Models\OderDetail;
@@ -17,40 +18,25 @@ class OderDetailController extends Controller
         $validator = Validator::make($jsonData, [
             '*.oderID' => 'required|exists:oders,id',
             '*.productID' => 'required|exists:products,id',
-            '*.size' => 'required', 
+            '*.size' => 'required',
             '*.price' => 'required',
             '*.quantity' => 'required'
         ]);
 
         if ($validator->fails()) {
-            $arr = [
-                'status' => 404,
-                'success' => false,
-                'message' => 'Lỗi kiểm tra dữ liệu',
-                'data' => $validator->errors()
-            ];
-            return response()->json($arr, 404);
+
+            return $this->errorResponse('Lỗi kiểm tra dữ liệu', $validator->errors(), 404);
         }
 
         foreach ($jsonData as $input) {
-            // Kiểm tra sự tồn tại của sản phẩm và hóa đơn
             $product = Product::find($input['productID']);
             $oder = Oder::find($input['oderID']);
 
             if (!$product || !$oder) {
-                $arr = [
-                    'status' => 404,
-                    'success' => false,
-                    'message' => 'Sản phẩm hoặc hóa đơn không tồn tại',
-                ];
-                return response()->json($arr, 404);
+
+                return $this->errorResponse('Sản phẩm hoặc hóa đơn không tồn tại', 404);
             }
-
-            // Chỉnh sửa 'sizeID' nếu cần thiết
-            // ...
-
-            // Thêm chi tiết hóa đơn
-            OderDetail::create([
+            $oderDT =  OderDetail::create([
                 'oderID' => $input['oderID'],
                 'productID' => $input['productID'],
                 'size' => $input['size'],
@@ -59,13 +45,7 @@ class OderDetailController extends Controller
             ]);
         }
 
-        $arr = [
-            'status' => 201,
-            'success' => true,
-            'message' => "Oder detail đã được thêm",
-        ];
-
-        return response()->json($arr, 201);
+        return $this->successResponse('Oder detail đã được thêm', new ResourcesOderDetail($oderDT));
     }
     public function show(string $id)
     {
@@ -73,7 +53,7 @@ class OderDetailController extends Controller
         if ($oderDetail->isEmpty()) {
             return $this->errorResponse("No oder found in oder detail with ID $id", null, 404);
         }
-        return $this->successResponse("List oder detail by oder", \App\Http\Resources\OderDetail::collection($oderDetail));
+        return $this->successResponse("List oder detail by oder", ResourcesOderDetail::collection($oderDetail));
     }
 
     private function successResponse($message, $data = null, $status = 200)
